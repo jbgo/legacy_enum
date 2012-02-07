@@ -36,4 +36,8 @@ describe TestModel do
   it 'should match string enums case insensitively' do
     TestModel.new(:TestCasing => 'Pickup TRUCK').string_casing_enumerated.should == :pickup_truck
   end
+
+  it 'should automatically label enumerations' do
+    TestModel.new(Unlabelled: 1).unlabelled_label.should == 'Unlabelled'
+  end
 end

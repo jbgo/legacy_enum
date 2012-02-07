@@ -1,18 +1,8 @@
 class TestModel < ActiveRecord::Base
   def self.columns
-      @columns ||= [];
-    end
-
-  def self.column(name, sql_type = nil, default = nil, null = true)
-    columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default,
-      sql_type.to_s, null)
+    @columns ||= [];
   end
 
-  # Override the save method to prevent exceptions.
-  def save(validate = true)
-    validate ? valid? : true
-  end
-  
   legacy_enum :enumerated, :lookup => :EnumeratedColumnID do |e|
     e.first 1, :label => "FIRST"
     e.second 2, :label => "SECOND"
@@ -26,6 +16,10 @@ class TestModel < ActiveRecord::Base
   legacy_enum :string_casing_enumerated, :lookup => :TestCasing do |e|
     e.pickup_truck 'Pickup truck'
   end
+
+  legacy_enum :unlabelled, lookup: 'Unlabelled' do |e|
+    e.unlabelled 1
+  end
   
-  attr_accessor :EnumeratedColumnID, :StringEnumeratedColumnID, :TestCasing
+  attr_accessor :EnumeratedColumnID, :StringEnumeratedColumnID, :TestCasing, :Unlabelled
 end
