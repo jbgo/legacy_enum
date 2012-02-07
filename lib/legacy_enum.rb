@@ -1,0 +1,2 @@
+module LegacyEnum
+end
