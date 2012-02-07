@@ -3,5 +3,4 @@ require 'bundler/setup'
 require 'legacy_enum'
 require 'test_model'
 
-RSpec.configure do |config|
-end
+ActiveRecord::Base.establish_connection adapter: 'sqlite3', database: ':memory:'
