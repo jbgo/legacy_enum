@@ -1,6 +1,6 @@
 = LegacyEnum
 
-== How?
+Allows your Rails app to interact with C-style integer-backed enumeration db columns using a more Ruby-ish syntax. 
 
   class Employee < ActiveRecord::Base
     legacy_enum :payroll_type, lookup: :payroll_type_id do |e|
@@ -34,8 +34,6 @@
 
 == Why?
 
-Allows your Rails app to interact with C-style integer-backed enumeration db columns using a more Ruby-ish syntax. 
-
 Lots of legacy apps written in C/C++/C#/Java have integer columns in the database that represent enumerated values in the system. 
 
 For example, in a legacy system dealing with employees, an employee might be classified with a C-style enumeration like: 
@@ -60,7 +58,7 @@ This could be accessed using legacy_enum like so:
 
 == Options
 
-= Lookups
+__Lookups__
 
 Conventionally, legacy_enum assumes that the backing int column is named the same as your field name, postfixed with "_id". If that isn't the case, use the "lookup" option.
 
@@ -68,7 +66,7 @@ Conventionally, legacy_enum assumes that the backing int column is named the sam
     ...
   end
   
-= Values
+__Values__
 
 Legacy_enum also assumes that your enumerated values begin with 1 and increase by one with each value. If this isn't the case, a backing value can be provided for each enumerated name.
 
@@ -78,7 +76,7 @@ Legacy_enum also assumes that your enumerated values begin with 1 and increase b
     e.string_value_is_ok 'zip_zop_zoobity_bop'
   end
 
-= Labels
+__Labels__
 
 Labels are automatically created and conventionally have the name [legacy_enum_field]_label. For instance, this definition would have a label named 'foo_label'
   
@@ -96,7 +94,7 @@ Each enumerated name, by default, has a label that is just the ActiveSupport#Tit
   p foo_label
   # >> 'Roflcopter'
 
-= Scopes
+__Scopes__
 
 ActiveRecord scopes can be created for your enumerated field, although by default they are not. The 'scope' option supports two values, :many and :one. 'Many' creates a scope with the enumeration name that accepts symbol values for the scope. 
 
