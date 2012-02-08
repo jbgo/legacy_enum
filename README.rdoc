@@ -1,5 +1,33 @@
-= LegacyEnum
+== LegacyEnum
 
-= TODO
-  - Refactor test cases
-  - More test coverage
+= How?
+
+```ruby
+  class Employee < ActiveRecord::Base
+    legacy_enum 'payroll_type', lookup: 'payroll_type_id' do |e|
+      e.salaried 1
+      e.full_time 2
+      e.part_time 3
+    end
+  end
+```
+
+```ruby
+  employee = Employee.new
+  employee.employee_payroll_type = :salaried
+  p employee.payroll_type_id 
+```
+
+  > 1
+
+= Why?
+
+Allows your Rails app to interact with C-style integer-backed enumeration db columns using a more Ruby-ish syntax. 
+
+Lots of legacy apps written in C/C++/C#/Java have integer columns in the database that represent enumerated values in the system. 
+
+For example, in a system dealing with employees, an employee might be classified with a C-style enumeration like: ... 
+
+== TODO
+  * Refactor test cases
+  * More test coverage
