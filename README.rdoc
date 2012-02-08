@@ -29,8 +29,8 @@
 
 == Requires
 
-  * Rails > 3.0
-  * Ruby > 1.9
+* Rails > 3.0
+* Ruby > 1.9
 
 == Why?
 
@@ -60,67 +60,67 @@ This could be accessed using legacy_enum like so:
 
 == Options
 
-  == Lookups
+= Lookups
+
+Conventionally, legacy_enum assumes that the backing int column is named the same as your field name, postfixed with "_id". If that isn't the case, use the "lookup" option.
+
+  legacy_enum :payroll_type, lookup: :unconventional_id_column_name do |e|
+    ...
+  end
   
-    Conventionally, legacy_enum assumes that the backing int column is named the same as your field name, postfixed with "_id". If that isn't the case, use the "lookup" option.
+= Values
 
-      legacy_enum :payroll_type, lookup: :unconventional_id_column_name do |e|
-        ...
-      end
+Legacy_enum also assumes that your enumerated values begin with 1 and increase by one with each value. If this isn't the case, a backing value can be provided for each enumerated name.
+
+  legacy_enum :payroll_type do |e|
+    e.some_value 32
+    e.another_value 64
+    e.string_value_is_ok 'zip_zop_zoobity_bop'
+  end
+
+= Labels
+
+Labels are automatically created and conventionally have the name [legacy_enum_field]_label. For instance, this definition would have a label named 'foo_label'
   
-  == Values
+  legacy_enum :foo do |e|
+    e.some_value 
+  end
 
-    Legacy_enum also assumes that your enumerated values begin with 1 and increase by one with each value. If this isn't the case, a backing value can be provided for each enumerated name.
+Each enumerated name, by default, has a label that is just the ActiveSupport#Titleized version of the enum name. This can be overridden using the 'label' option for each value.
 
-      legacy_enum :payroll_type do |e|
-        e.some_value 32
-        e.another_value 64
-        e.string_value_is_ok 'zip_zop_zoobity_bop'
-      end
+  legacy_enum :foo do |e|
+    e.crazy_label label: 'Roflcopter'
+  end
 
-  == Labels
+  foo = :crazy_label
+  p foo_label
+  # >> 'Roflcopter'
 
-    Labels are automatically created and conventionally have the name [legacy_enum_field]_label. For instance, this definition would have a label named 'foo_label'
-      
-      legacy_enum :foo do |e|
-        e.some_value 
-      end
+= Scopes
 
-    Each enumerated name, by default, has a label that is just the ActiveSupport#Titleized version of the enum name. This can be overridden using the 'label' option for each value.
+ActiveRecord scopes can be created for your enumerated field, although by default they are not. The 'scope' option supports two values, :many and :one. 'Many' creates a scope with the enumeration name that accepts symbol values for the scope. 
 
-      legacy_enum :foo do |e|
-        e.crazy_label label: 'Roflcopter'
-      end
+  class Employee < ActiveRecord::Base
+    legacy_enum :payroll_type, scope: :many do |e|
+      e.salaried
+      e.full_time
+      e.part_time
+    end
+  end
 
-      foo = :crazy_label
-      p foo_label
-      # >> 'Roflcopter'
-
-  == Scopes
-
-    ActiveRecord scopes can be created for your enumerated field, although by default they are not. The 'scope' option supports two values, :many and :one. 'Many' creates a scope with the enumeration name that accepts symbol values for the scope. 
-
-      class Employee < ActiveRecord::Base
-        legacy_enum :payroll_type, scope: :many do |e|
-          e.salaried
-          e.full_time
-          e.part_time
-        end
-      end
-
-      # The following scopes are created
-      Employee.payroll_type(:salaried) 
-      # 'SELECT * FROM employees WHERE payroll_type_id = 1'
-      Employee.salaried
-      # 'SELECT * FROM employees WHERE payroll_type_id = 1'
-      Employee.full_time
-      # 'SELECT * FROM employees WHERE payroll_type_id = 2'
-      Employee.part_time
-      # 'SELECT * FROM employees WHERE payroll_type_id = 3'
+  # The following scopes are created
+  Employee.payroll_type(:salaried) 
+  # 'SELECT * FROM employees WHERE payroll_type_id = 1'
+  Employee.salaried
+  # 'SELECT * FROM employees WHERE payroll_type_id = 1'
+  Employee.full_time
+  # 'SELECT * FROM employees WHERE payroll_type_id = 2'
+  Employee.part_time
+  # 'SELECT * FROM employees WHERE payroll_type_id = 3'
 
 == Who?
   
-  legacy_enum was written by {Sean Scally}[http://github.com/anydiem] for {AutoRevo}[http://www.autorevo.com] with code contributed by {Matt Shannon}[http://github.com/dmshann0n]. 
+legacy_enum was written by {Sean Scally}[http://github.com/anydiem] for {AutoRevo}[http://www.autorevo.com] with code contributed by {Matt Shannon}[http://github.com/dmshann0n]. 
 
 == License
 
