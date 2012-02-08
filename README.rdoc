@@ -2,20 +2,19 @@
 
 = How?
 
-
-    class Employee < ActiveRecord::Base
-      legacy_enum 'payroll_type', lookup: 'payroll_type_id' do |e|
-        e.salaried 1
-        e.full_time 2
-        e.part_time 3
-      end
+  class Employee < ActiveRecord::Base
+    legacy_enum 'payroll_type', lookup: 'payroll_type_id' do |e|
+      e.salaried 1
+      e.full_time 2
+      e.part_time 3
     end
+  end
 
-    employee = Employee.new
-    employee.employee_payroll_type = :salaried
-    
-    p employee.payroll_type_id 
-    >> 1
+  employee = Employee.new
+  employee.payroll_type = :salaried
+  
+  p employee.payroll_type_id 
+  >> 1
 
 = Why?
 
