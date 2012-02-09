@@ -20,5 +20,8 @@ describe 'Labels' do
     test.payroll_type_label.should == 'Part-Timer'
   end
 
-  it 'automatically labels if no label is provided'
+  it 'automatically labels with titleization if no label is provided' do
+    test = LabelsTest.new(payroll_type: :full_time)
+    test.payroll_type_label.should == 'Full Time'
+  end
 end
