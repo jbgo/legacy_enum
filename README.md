@@ -98,7 +98,7 @@ Labels are automatically created and conventionally have the name [legacy_enum_f
 
 ```ruby  
 legacy_enum :foo do |e|
-  e.some_value 
+  e.some_value 1
 end
 ```
 
@@ -106,7 +106,7 @@ Each enumerated name, by default, has a label that is just the ActiveSupport#Tit
 
 ```ruby
 legacy_enum :foo do |e|
-  e.crazy_label label: 'Roflcopter'
+  e.crazy_label 1 label: 'Roflcopter'
 end
 
 foo = :crazy_label
@@ -121,9 +121,9 @@ ActiveRecord scopes can be created for your enumerated field, although by defaul
 ```ruby
 class Employee < ActiveRecord::Base
   legacy_enum :payroll_type, scope: :many do |e|
-    e.salaried
-    e.full_time
-    e.part_time
+    e.salaried 1
+    e.full_time 2
+    e.part_time 3
   end
 end
 
