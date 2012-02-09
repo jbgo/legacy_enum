@@ -49,9 +49,9 @@ This could be accessed using legacy_enum like so:
 
 ```ruby  
 legacy_enum :payroll_type do |e|
-  e.salaried
-  e.full_time
-  e.part_time
+  e.salaried 1
+  e.full_time 2
+  e.part_time 3
 end
 ```
 
@@ -59,7 +59,7 @@ end
 
 ```ruby
 legacy_enum [rails_friendly_name], options do |e|
-  e.enumerated_name [value], options
+  e.enumerated_name value, [options]
   ...
 end
 ```
@@ -78,13 +78,17 @@ end
 
 #### Values
 
-Legacy_enum also assumes that your enumerated values begin with 1 and increase by one with each value. If this isn't the case, a backing value can be provided for each enumerated name.
+Legacy_enum requires that a backing value be provided for each enumerated name. A value can be an integer or a string.
 
 ```ruby
-legacy_enum :payroll_type do |e|
+legacy_enum :int_values do |e|
   e.some_value 32
   e.another_value 64
-  e.string_value_is_ok 'zip_zop_zoobity_bop'
+end
+
+legacy_enum :string_values do |e|
+  e.a_string_value_is_ok 'zip_zop_zoobity_bop'
+  e.another_string 'here_i_go_down_the_slope'
 end
 ```
 
