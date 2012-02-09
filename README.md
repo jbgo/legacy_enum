@@ -42,7 +42,7 @@ For example, in a legacy system dealing with employees, an employee might be cla
 
 ```c
 enum PayrollType { Salaried = 1, FullTime, PartTime }
-// stored in a db column named "payroll_type_id" as its integer value
+// stored in a db column named "PayrollTypeID" as its integer value
 ```
 
 This could be accessed using legacy_enum like so:
@@ -68,7 +68,7 @@ end
 
 #### Lookups
 
-Conventionally, legacy_enum assumes that the backing int column is named the same as your field name, postfixed with "_id". If that isn't the case, use the "lookup" option.
+Conventionally, legacy_enum assumes that the backing int column is named the same as your field name, capitalized and postfixed with "ID". If that isn't the case, use the "lookup" option.
 
 ```ruby
 legacy_enum :payroll_type, lookup: :unconventional_id_column_name do |e|
@@ -120,7 +120,7 @@ ActiveRecord scopes can be created for your enumerated field, although by defaul
 
 ```ruby
 class Employee < ActiveRecord::Base
-  legacy_enum :payroll_type, scope: :many do |e|
+  legacy_enum :payroll_type, lookup: :payroll_type_id, scope: :many do |e|
     e.salaried 1
     e.full_time 2
     e.part_time 3
