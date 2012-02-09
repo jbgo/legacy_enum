@@ -2,6 +2,7 @@ require 'spec_helper'
 
 class LookupTest < SpecModel
   attr_accessor :foo_id, :BarID
+  
   legacy_enum :foo, lookup: :foo_id do |e|
     e.first 1
   end
