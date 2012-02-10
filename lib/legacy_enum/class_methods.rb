@@ -43,7 +43,7 @@ module LegacyEnum
           lambda { |enum_value| where(id_attr_name => enums[name.to_sym][enum_value]) }
         
         self.enums[name].keys.each do |value|
-          (class << self; self; end).instance_eval do
+          singleton_class.instance_eval do
             if extracted_options[:scope] == :one
               define_method value.to_sym, lambda { send(name.to_sym, value.to_sym).first }
             else

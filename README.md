@@ -31,8 +31,8 @@ p employee.payroll_type
 
 ## Requires
 
-* Rails > 3.0
-* Ruby > 1.9
+* Rails >= 3.0
+* Ruby >= 1.9.2
 
 ## Why?
 
