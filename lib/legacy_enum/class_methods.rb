@@ -1,9 +1,8 @@
 module LegacyEnum
   module ClassMethods
     def legacy_enum(name, *options, &block)
-      values_name = "@@#{name}_values".downcase
-      options = options.extract_options!
-      id_attr_name = options[:lookup].try(:to_s) || "#{name.to_s.capitalize}ID"
+      extracted_options = options.extract_options!
+      id_attr_name = extracted_options[:lookup].try(:to_s) || "#{name.to_s.capitalize}ID"
 
       config = MethodDefinitionDSL.new
       config.instance_eval(&block)
@@ -13,21 +12,6 @@ module LegacyEnum
       self.enum_config[name] = config.enum_def
 
       class_eval do
-        if options[:scope]
-          scope name.to_sym, 
-            lambda { |enum_value| where(id_attr_name => enums[name.to_sym][enum_value]) }
-          
-          self.enums[name].keys.each do |value|
-            (class << self; self; end).instance_eval do
-              if options[:scope] == :one
-                define_method value.to_sym, lambda { send(name.to_sym, value.to_sym).first }
-              else
-                define_method value.to_sym, lambda { send(name.to_sym, value.to_sym) }
-              end
-            end
-          end
-        end
-
         find_enum_entry = Proc.new do |_self, name, sym|
           enum_entry = _self.enum_config[name].find do |hash|
             attr_value = _self.send(id_attr_name.to_sym)
@@ -52,7 +36,24 @@ module LegacyEnum
         define_method "#{name}_label" do
           find_enum_entry.call(self, name, :label)
         end
+
+        return unless extracted_options[:scope]
+        
+        scope name.to_sym, 
+          lambda { |enum_value| where(id_attr_name => enums[name.to_sym][enum_value]) }
+        
+        self.enums[name].keys.each do |value|
+          (class << self; self; end).instance_eval do
+            if extracted_options[:scope] == :one
+              define_method value.to_sym, lambda { send(name.to_sym, value.to_sym).first }
+            else
+              define_method value.to_sym, lambda { send(name.to_sym, value.to_sym) }
+            end
+          end
+        end
+        
       end
+
     end
 
     def enums
