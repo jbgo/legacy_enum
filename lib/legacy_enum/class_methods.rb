@@ -12,24 +12,17 @@ module LegacyEnum
       self.enum_config ||= {}
       self.enum_config[name] = config.enum_def
 
-      #TODO make more lightweight by conditionally adding these methods on first use via method_missing
       class_eval do
         if options[:scope]
-          scope name.to_sym, lambda { |enum_val|
-            { :conditions => { id_attr_name.to_sym => enums[name.to_sym][enum_val] } }
-          }
+          scope name.to_sym, 
+            lambda { |enum_value| where(id_attr_name => enums[name.to_sym][enum_value]) }
+          
           self.enums[name].keys.each do |value|
-            if options[:scope] == :one
-              (class << self; self; end).instance_eval do
-                define_method value.to_sym, lambda { 
-                  send(name.to_sym, value.to_sym).first
-                }
-              end
-            else
-              (class << self; self; end).instance_eval do
-                define_method value.to_sym, lambda { 
-                  send(name.to_sym, value.to_sym)
-                }
+            (class << self; self; end).instance_eval do
+              if options[:scope] == :one
+                define_method value.to_sym, lambda { send(name.to_sym, value.to_sym).first }
+              else
+                define_method value.to_sym, lambda { send(name.to_sym, value.to_sym) }
               end
             end
           end
@@ -45,7 +38,7 @@ module LegacyEnum
         end
 
         define_method name do
-          find_enum_entry.call(self, name, :name)
+          find_enum_entry.call self, name, :name
         end
 
         define_method "#{name}=" do |value|
