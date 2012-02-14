@@ -56,20 +56,23 @@ module LegacyEnum
 
     end
 
+    # Returns all enumerations for the class by enum_name and then name => value
     def enums
       inject_block(:name, :value)
     end
 
+    # Returns all enumerations for the class by enum_name and then name => label
     def labels
       inject_block(:name, :label)
     end
 
+    # Returns all enumerations for the class by enum_name and then value => name
     def enum_ids
       inject_block(:value, :name)
     end
 
   private
-    #this name sux, refactor it
+    # Restructures the enum_config around a key/value pair
     def inject_block(key, value)
       self.enum_config.inject({}) do |acc, (name,config)|
         acc.merge( { name => config.inject({}) do |inner_acc, enum_item|
