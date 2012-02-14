@@ -40,14 +40,14 @@ module LegacyEnum
         return unless extracted_options[:scope]
         
         scope name.to_sym, 
-          lambda { |enum_value| where(id_attr_name => enums[name.to_sym][enum_value]) }
+          lambda { |enum_value| where(id_attr_name => self.enum_config[name].find { |hash| hash[:name] == enum_value }[:value] ) }
         
-        self.enums[name].keys.each do |value|
+        self.enum_config[name].each do |config|
           singleton_class.instance_eval do
             if extracted_options[:scope] == :one
-              define_method value.to_sym, lambda { send(name.to_sym, value.to_sym).first }
+              define_method config[:name].to_sym, lambda { send(name.to_sym, config[:name].to_sym).first }
             else
-              define_method value.to_sym, lambda { send(name.to_sym, value.to_sym) }
+              define_method config[:name].to_sym, lambda { send(name.to_sym, config[:name].to_sym) }
             end
           end
         end
