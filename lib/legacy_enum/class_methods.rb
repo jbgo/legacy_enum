@@ -9,45 +9,42 @@ module LegacyEnum
 
       cattr_accessor :enum_config unless defined? self.enum_config
       self.enum_config ||= {}
-      self.enum_config[name] = config.enum_def
+
+      self.enum_config[name] = { values: config.enum_def, lookup: id_attr_name }
 
       class_eval do
-        find_enum_entry = Proc.new do |_self, name, sym|
-          enum_entry = _self.enum_config[name].find do |hash|
-            attr_value = _self.send(id_attr_name.to_sym)
-            attr_value.to_s.upcase == hash[:value].to_s.upcase
-          end
 
-          enum_entry[sym] unless enum_entry.blank?
+        define_method :legacy_value do |name|
+          send enum_config[name][:lookup].to_sym
         end
 
         define_method name do
-          find_enum_entry.call self, name, :name
+          self.enum_config[name][:values].valued(self.legacy_value(name)).try(:[], :name)
         end
 
         define_method "#{name}=" do |value|
           self.send("#{id_attr_name}=".to_sym, nil) if value.blank?
-          enum_entry = self.enum_config[name].find { |hash| hash[:name] == (value.blank? ? value : value.to_sym) }
+          enum_entry = self.enum_config[name][:values].named(value)
           unless enum_entry.blank?
             self.send("#{id_attr_name}=".to_sym, enum_entry[:value])
           end
         end
 
         define_method "#{name}_label" do
-          find_enum_entry.call(self, name, :label)
+          self.enum_config[name][:values].valued(self.legacy_value(name)).try(:[], :label)
         end
 
         return unless extracted_options[:scope]
         
         scope name.to_sym, 
-          lambda { |enum_value| where(id_attr_name => self.enum_config[name].find { |hash| hash[:name] == enum_value }[:value] ) }
+          lambda { |enum_value| where(id_attr_name => self.enum_config[name][:values].named(enum_value)[:value] ) }
         
-        self.enum_config[name].each do |config|
+        self.enum_config[name][:values].each do |config|
           singleton_class.instance_eval do
             if extracted_options[:scope] == :one
-              define_method config[:name].to_sym, lambda { send(name.to_sym, config[:name].to_sym).first }
+              define_method config[:name].to_sym, lambda { send(name, config[:name]).first }
             else
-              define_method config[:name].to_sym, lambda { send(name.to_sym, config[:name].to_sym) }
+              define_method config[:name].to_sym, lambda { send(name, config[:name]) }
             end
           end
         end
@@ -75,7 +72,7 @@ module LegacyEnum
     # Restructures the enum_config around a key/value pair
     def inject_block(key, value)
       self.enum_config.inject({}) do |acc, (name,config)|
-        acc.merge( { name => config.inject({}) do |inner_acc, enum_item|
+        acc.merge( { name => config[:values].inject({}) do |inner_acc, enum_item|
           inner_acc.merge( { enum_item[key] => enum_item[value] } )
         end })
       end

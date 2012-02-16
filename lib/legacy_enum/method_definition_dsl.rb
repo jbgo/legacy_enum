@@ -4,6 +4,7 @@ module LegacyEnum
 
     def method_missing(symbol, *args)
       @enum_def ||= []
+      @enum_def.singleton_class.send :include, ConfigurationSearch
       
       options = args.extract_options!
       
