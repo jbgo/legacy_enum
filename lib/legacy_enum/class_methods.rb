@@ -18,16 +18,17 @@ module LegacyEnum
           send enum_config[name][:lookup].to_sym
         end
 
+        define_method :set_legacy_value do |name, value|
+          send "#{enum_config[name][:lookup]}=".to_sym, value
+        end
+
         define_method name do
           self.enum_config[name][:values].valued(self.legacy_value(name)).try(:[], :name)
         end
 
         define_method "#{name}=" do |value|
-          self.send("#{id_attr_name}=".to_sym, nil) if value.blank?
-          enum_entry = self.enum_config[name][:values].named(value)
-          unless enum_entry.blank?
-            self.send("#{id_attr_name}=".to_sym, enum_entry[:value])
-          end
+          set_value = value.blank? ? nil : self.enum_config[name][:values].named(value).try(:[], :value)
+          self.set_legacy_value name, set_value
         end
 
         define_method "#{name}_label" do
