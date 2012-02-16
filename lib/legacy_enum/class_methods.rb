@@ -14,33 +14,33 @@ module LegacyEnum
 
       class_eval do
 
-        define_method :legacy_value do |name|
-          send enum_config[name][:lookup].to_sym
-        end
-
-        define_method :set_legacy_value do |name, value|
-          send "#{enum_config[name][:lookup]}=".to_sym, value
-        end
-
         define_method name do
-          self.enum_config[name][:values].valued(self.legacy_value(name)).try(:[], :name)
+          enum_config[name][:values].valued(legacy_value(name))[:name]
         end
 
         define_method "#{name}=" do |value|
-          set_value = value.blank? ? nil : self.enum_config[name][:values].named(value).try(:[], :value)
-          self.set_legacy_value name, set_value
+          set_value = enum_config[name][:values].named(value)[:value]
+          set_legacy_value name, set_value
         end
 
         define_method "#{name}_label" do
-          self.enum_config[name][:values].valued(self.legacy_value(name)).try(:[], :label)
+          enum_config[name][:values].valued(legacy_value(name))[:label]
+        end
+
+        def legacy_value(name)
+          send enum_config[name][:lookup].to_sym
+        end
+
+        def set_legacy_value(name, value)
+          send "#{enum_config[name][:lookup]}=".to_sym, value
         end
 
         return unless extracted_options[:scope]
         
         scope name.to_sym, 
-          lambda { |enum_value| where(id_attr_name => self.enum_config[name][:values].named(enum_value)[:value] ) }
+          lambda { |enum_value| where(id_attr_name => enum_config[name][:values].named(enum_value)[:value] ) }
         
-        self.enum_config[name][:values].each do |config|
+        enum_config[name][:values].each do |config|
           singleton_class.instance_eval do
             if extracted_options[:scope] == :one
               define_method config[:name].to_sym, lambda { send(name, config[:name]).first }
