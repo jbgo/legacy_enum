@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Brings enumerated int columns into the 21st century"
   s.description = "Allows you to address enumerated integer columns as more sane and readable symbols"
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency 'rails', '> 3.0.0'
 
