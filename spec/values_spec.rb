@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class ValuesTest < SpecModel
-  attr_accessor :int_column, :string_column
+  attr_accessor :int_column, :string_column, :symbol_column
 
   legacy_enum :ints, lookup: :int_column do |e|
     e.first 1
@@ -48,5 +48,11 @@ describe 'Values' do
     value.ints = nil
     value.ints.should == nil
     value.int_column.should == nil
+  end
+
+  it 'can handle symbols' do
+    value = ValuesTest.new
+    value.ints = 'first'
+    value.int_column.should == 1
   end
 end

@@ -19,7 +19,8 @@ module LegacyEnum
         end
 
         define_method "#{name}=" do |value|
-          set_value = enum_config[name][:values].named(value)[:value]
+          normalized_value = value.nil? ? value : value.to_sym
+          set_value = enum_config[name][:values].named(normalized_value)[:value]
           set_legacy_value name, set_value
         end
 
