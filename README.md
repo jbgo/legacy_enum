@@ -140,7 +140,7 @@ Employee.part_time
 
 ## Who?
   
-legacy_enum was written by [Sean Scally](http://github.com/anydiem) for [AutoRevo](http://www.autorevo.com) with code contributed by [Matt Shannon](http://github.com/dmshann0n). 
+legacy_enum was written by [Sean Scally](http://github.com/scally) for [AutoRevo](http://www.autorevo.com) with code contributed by [Matt Shannon](http://github.com/dmshann0n). 
 
 legacy_enum was inspired by jeffp's [enumerated_attribute](http://github.com/jeffp/enumerated_attribute).
 
